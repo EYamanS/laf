@@ -24,6 +24,7 @@ struct Platform {
     Unknown,
     Windows,
     macOS,
+    iOS,
     Linux,
   };
 
@@ -39,6 +40,8 @@ struct Platform {
     OS::Windows
 #elif LAF_MACOS
     OS::macOS
+#elif LAF_IOS
+    OS::iOS
 #else
     OS::Linux
 #endif
@@ -69,8 +72,8 @@ struct Platform {
   Version servicePack;           // Service pack version
   bool isWow64 = false;          // 32-bit version running on 64-bit
   const char* wineVer = nullptr; // Are we running on Wine emulator?
-#elif LAF_MACOS
-    // Nothing extra (macOS version on "osVer" field)
+#elif LAF_MACOS || LAF_IOS
+    // Nothing extra (macOS/iOS version on "osVer" field)
 #elif LAF_LINUX
   std::string distroName; // Linux distribution name
   std::string distroVer;  // Distribution version
@@ -84,7 +87,7 @@ Platform get_platform();
 bool is_wow64();
 const char* get_wine_version();
 
-#elif LAF_MACOS
+#elif LAF_MACOS || LAF_IOS
 
 Version get_osx_version();
 

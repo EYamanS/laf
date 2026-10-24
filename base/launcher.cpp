@@ -63,6 +63,11 @@ static int win32_shell_execute(const wchar_t* verb, const wchar_t* file, const w
 
 namespace base { namespace launcher {
 
+#if LAF_IOS
+// Implemented in launcher_ios.mm
+bool ios_open_url(const std::string& url, bool isFile);
+#endif
+
 bool open_url(const std::string& url)
 {
   return open_file(url);
@@ -75,6 +80,10 @@ bool open_file(const std::string& file)
 #if LAF_WINDOWS
 
   ret = win32_shell_execute(L"open", base::from_utf8(file).c_str(), NULL);
+
+#elif LAF_IOS
+
+  return ios_open_url(file, base::is_file(file));
 
 #elif HAVE_SYSTEM
 
@@ -106,6 +115,12 @@ bool open_folder(const std::string& _file)
                               (L"/e,/select,\"" + base::from_utf8(file) + L"\"").c_str());
   }
   return (ret == 0);
+
+#elif LAF_IOS
+
+  if (!base::is_directory(file))
+    file = base::get_file_path(file);
+  return ios_open_url(file, true);
 
 #elif HAVE_SYSTEM
 

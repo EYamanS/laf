@@ -198,6 +198,12 @@ std::string get_temp_path()
 
 std::string get_user_docs_folder()
 {
+#if LAF_IOS
+  // The "Documents" folder inside the app sandbox is the only one
+  // visible to the user (through the Files app).
+  if (char* home = getenv("HOME"))
+    return std::string(home) + "/Documents";
+#endif
   char* tmpdir = getenv("HOME");
   if (tmpdir)
     return tmpdir;

@@ -10,7 +10,11 @@
 
 #include "base/platform.h"
 
-#include <Cocoa/Cocoa.h>
+#if LAF_IOS
+  #include <Foundation/Foundation.h>
+#else
+  #include <Cocoa/Cocoa.h>
+#endif
 
 namespace base {
 
@@ -27,6 +31,7 @@ Version get_osx_version()
     minor = osVer.minorVersion;
     patch = osVer.patchVersion;
   }
+#if !LAF_IOS
   else {
     SInt32 systemVersion, majorVersion, minorVersion, patchVersion;
     if (Gestalt(gestaltSystemVersion, &systemVersion) != noErr)
@@ -44,6 +49,7 @@ Version get_osx_version()
       patch = patchVersion;
     }
   }
+#endif
 
   return Version(major, minor, patch, 0);
 }

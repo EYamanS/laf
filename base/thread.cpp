@@ -97,8 +97,8 @@ void this_thread::set_name(const std::string& name)
 #if LAF_WINDOWS
   if (kernelBaseApi.SetThreadDescription)
     kernelBaseApi.SetThreadDescription(GetCurrentThread(), base::from_utf8(name).c_str());
-#elif LAF_MACOS
-  // macOS has a non-standard pthread_setname_np() impl
+#elif LAF_MACOS || LAF_IOS
+  // macOS/iOS have a non-standard pthread_setname_np() impl
   int res = pthread_setname_np(name.c_str());
   if (res != 0 && name.size() > 63) {
     pthread_setname_np(name.substr(0, 63).c_str());

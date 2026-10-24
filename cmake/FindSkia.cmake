@@ -30,6 +30,9 @@ endif()
 find_library(SKIA_LIBRARY skia PATH "${SKIA_LIBRARY_DIR}")
 if(WIN32)
   find_library(SKIA_OPENGL_LIBRARY opengl32)
+elseif(IOS)
+  # Skia is compiled without GPU support on iOS (raster only)
+  set(SKIA_OPENGL_LIBRARY "")
 elseif(APPLE)
   find_library(SKIA_OPENGL_LIBRARY OpenGL NAMES GL)
 else()
@@ -198,10 +201,17 @@ target_compile_definitions(skia INTERFACE
   SK_GAMMA_SRGB
   SK_GAMMA_APPLY_TO_A8
   SK_SCALAR_TO_FLOAT_EXCLUDED
-  SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1
-  SK_SUPPORT_GPU=1
-  SK_ENABLE_SKSL=1
-  SK_GL=1)
+  SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1)
+if(IOS)
+  target_compile_definitions(skia INTERFACE
+    SK_SUPPORT_GPU=0
+    SK_ENABLE_SKSL=1)
+else()
+  target_compile_definitions(skia INTERFACE
+    SK_SUPPORT_GPU=1
+    SK_ENABLE_SKSL=1
+    SK_GL=1)
+endif()
 
 # Freetype is used by skia, and it needs zlib and libpng
 target_link_libraries(skia INTERFACE
@@ -212,6 +222,9 @@ if(WIN32)
   target_compile_definitions(skia INTERFACE
     SK_BUILD_FOR_WIN
     _CRT_SECURE_NO_WARNINGS)
+elseif(IOS)
+  target_compile_definitions(skia INTERFACE
+    SK_BUILD_FOR_IOS)
 elseif(APPLE)
   target_compile_definitions(skia INTERFACE
     SK_BUILD_FOR_MAC)
@@ -220,7 +233,21 @@ else()
     SK_BUILD_FOR_UNIX)
 endif()
 
-if(APPLE)
+if(IOS)
+  find_library(UIKIT_LIBRARY UIKit)
+  find_library(CORETEXT_LIBRARY CoreText)
+  find_library(COREGRAPHICS_LIBRARY CoreGraphics)
+  find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+  find_library(IMAGEIO_LIBRARY ImageIO)
+  find_library(MOBILECORESERVICES_LIBRARY MobileCoreServices)
+  target_link_libraries(skia INTERFACE
+    ${UIKIT_LIBRARY}
+    ${CORETEXT_LIBRARY}
+    ${COREGRAPHICS_LIBRARY}
+    ${COREFOUNDATION_LIBRARY}
+    ${IMAGEIO_LIBRARY}
+    ${MOBILECORESERVICES_LIBRARY})
+elseif(APPLE)
   find_library(COCOA_LIBRARY Cocoa)
   target_link_libraries(skia INTERFACE
     ${COCOA_LIBRARY})

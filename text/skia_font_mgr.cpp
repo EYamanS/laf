@@ -13,7 +13,7 @@
 
 #if LAF_WINDOWS
   #include "include/ports/SkTypeface_win.h"
-#elif LAF_MACOS
+#elif LAF_MACOS || LAF_IOS
   #include "include/ports/SkFontMgr_mac_ct.h"
 #elif LAF_LINUX
   #include "include/ports/SkFontMgr_fontconfig.h"
@@ -114,7 +114,7 @@ SkiaFontMgr::SkiaFontMgr()
 {
 #if LAF_WINDOWS
   m_skFontMgr = SkFontMgr_New_DirectWrite();
-#elif LAF_MACOS
+#elif LAF_MACOS || LAF_IOS
   m_skFontMgr = SkFontMgr_New_CoreText(nullptr);
 #elif LAF_LINUX
   m_skFontMgr = SkFontMgr_New_FontConfig(nullptr);
@@ -129,6 +129,9 @@ SkiaFontMgr::~SkiaFontMgr()
 
 FontRef SkiaFontMgr::loadTrueTypeFont(const char* filename, float size)
 {
+  if (!filename || !*filename)
+    return nullptr;
+
   // Use the native impl from Skia to load the font file
   sk_sp<SkTypeface> face = m_skFontMgr->makeFromFile(filename);
   if (!face) {

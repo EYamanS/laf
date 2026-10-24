@@ -70,6 +70,10 @@ elseif(APPLE)
     fs_osx.mm
     platform_osx.mm
     uuid_osx.mm)
+  if(IOS)
+    set(BASE_SOURCES ${BASE_SOURCES}
+      launcher_ios.mm)
+  endif()
 else()
   set(BASE_SOURCES ${BASE_SOURCES}
     platform_unix.cpp
@@ -116,7 +120,13 @@ else()
     target_compile_options(laf-base PRIVATE -fobjc-arc)
 
     find_library(FOUNDATION_LIBRARY Foundation)
-    target_compile_definitions(laf-base PUBLIC LAF_MACOS)
+    if(IOS)
+      find_library(UIKIT_LIBRARY UIKit)
+      target_compile_definitions(laf-base PUBLIC LAF_IOS)
+      target_link_libraries(laf-base ${UIKIT_LIBRARY})
+    else()
+      target_compile_definitions(laf-base PUBLIC LAF_MACOS)
+    endif()
     target_link_libraries(laf-base ${FOUNDATION_LIBRARY})
   else()
     target_compile_definitions(laf-base PUBLIC LAF_LINUX)

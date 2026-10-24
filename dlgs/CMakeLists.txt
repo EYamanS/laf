@@ -6,6 +6,9 @@ target_link_libraries(laf-dlgs laf-base)
 
 if(WIN32)
   target_sources(laf-dlgs PRIVATE win/file_dialog_win.cpp)
+elseif(IOS)
+  # FileDialog::make() returns nullptr, the app must use its own
+  # file selector.
 elseif(APPLE)
   target_sources(laf-dlgs PRIVATE file_dialog_osx.mm)
 else()
