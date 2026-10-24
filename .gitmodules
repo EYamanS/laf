@@ -1,6 +1,7 @@
 [submodule "clip"]
 	path = clip
-	url = https://github.com/aseprite/clip.git
+	url = https://github.com/EYamanS/clip.git
+	branch = ios
 [submodule "third_party/googletest"]
 	path = third_party/googletest
 	url = https://github.com/aseprite/googletest.git
