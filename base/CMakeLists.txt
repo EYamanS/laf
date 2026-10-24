@@ -72,7 +72,8 @@ elseif(APPLE)
     uuid_osx.mm)
   if(IOS)
     set(BASE_SOURCES ${BASE_SOURCES}
-      launcher_ios.mm)
+      launcher_ios.mm
+      security_scope_ios.mm)
   endif()
 else()
   set(BASE_SOURCES ${BASE_SOURCES}

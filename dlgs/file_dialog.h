@@ -75,6 +75,8 @@ public:
   #endif
 #elif LAF_MACOS
   static FileDialogRef makeOSX(const Spec& spec);
+#elif LAF_IOS
+  static FileDialogRef makeIOS(const Spec& spec);
 #elif LAF_LINUX
   static FileDialogRef makeX11(const Spec& spec);
 #endif

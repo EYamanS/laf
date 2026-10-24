@@ -7,8 +7,11 @@ target_link_libraries(laf-dlgs laf-base)
 if(WIN32)
   target_sources(laf-dlgs PRIVATE win/file_dialog_win.cpp)
 elseif(IOS)
-  # FileDialog::make() returns nullptr, the app must use its own
-  # file selector.
+  find_library(UIKIT_LIBRARY UIKit)
+  find_library(UNIFORMTYPEIDENTIFIERS_LIBRARY UniformTypeIdentifiers)
+  target_sources(laf-dlgs PRIVATE file_dialog_ios.mm)
+  target_compile_options(laf-dlgs PRIVATE -fobjc-arc)
+  target_link_libraries(laf-dlgs ${UIKIT_LIBRARY} ${UNIFORMTYPEIDENTIFIERS_LIBRARY})
 elseif(APPLE)
   target_sources(laf-dlgs PRIVATE file_dialog_osx.mm)
 else()

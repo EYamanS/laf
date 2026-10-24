@@ -11,6 +11,7 @@
 #include "os/ios/app.h"
 
 #include "base/paths.h"
+#include "base/security_scope_ios.h"
 #include "os/event.h"
 #include "os/event_queue.h"
 #include "os/ios/system.h"
@@ -45,9 +46,9 @@ std::string path_from_url(NSURL* url)
     return std::string();
 
   // Files outside our sandbox (opened in place from the Files app)
-  // need a security-scoped access. We keep the access during the
-  // whole life of the app to be able to save the file too.
-  [url startAccessingSecurityScopedResource];
+  // need a security-scoped access, we keep it to be able to save the
+  // file too (and to open it again from the recent files list).
+  base::ios_keep_access((__bridge void*)url);
   return std::string(url.path.fileSystemRepresentation);
 }
 
@@ -78,6 +79,9 @@ void start_app_main()
   if (g_appMainStarted)
     return;
   g_appMainStarted = true;
+
+  // Access to files/folders picked in previous sessions
+  base::ios_restore_access();
 
   std::vector<char*> args(g_argv, g_argv + g_argc);
   for (const auto& fn : g_initialFiles)
