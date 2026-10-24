@@ -26,6 +26,9 @@
   #include "os/osx/color_space.h"
   #include "os/osx/system.h"
   #define SkiaSystemBase SystemOSX
+#elif LAF_IOS
+  #include "os/ios/system.h"
+  #define SkiaSystemBase SystemIOS
 #elif LAF_LINUX
   #include "os/x11/system.h"
   #define SkiaSystemBase SystemX11
@@ -46,6 +49,10 @@ public:
 
   Capabilities capabilities() const override
   {
+#if LAF_IOS
+    // Only one full-screen window (the UIKit window) is available.
+    return Capabilities(int(Capabilities::WindowScale) | int(Capabilities::ColorSpaces));
+#else
     return Capabilities(int(Capabilities::MultipleWindows) | int(Capabilities::CanResizeWindow) |
                         int(Capabilities::WindowScale) | int(Capabilities::CustomMouseCursor) |
                         int(Capabilities::ColorSpaces)
@@ -56,6 +63,7 @@ public:
                         | int(Capabilities::GpuAccelerationSwitch)
 #endif
     );
+#endif
   }
 
   void setTabletOptions(const TabletOptions& options) override

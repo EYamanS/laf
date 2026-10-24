@@ -31,6 +31,15 @@ if(WIN32)
     list(APPEND LAF_OS_SOURCES
       win/ime_manager.cpp)
   endif()
+elseif(IOS)
+  list(APPEND LAF_OS_SOURCES
+    ios/app.mm
+    ios/event_queue.mm
+    ios/keys.mm
+    ios/logger.mm
+    ios/system.mm
+    ios/view.mm
+    ios/window.mm)
 elseif(APPLE)
   find_library(COCOA_LIBRARY Cocoa)
   find_library(CARBON_LIBRARY Carbon)
@@ -78,6 +87,9 @@ if(LAF_BACKEND STREQUAL "skia")
   if(WIN32)
     list(APPEND LAF_OS_SOURCES
       skia/skia_window_win.cpp)
+  elseif(IOS)
+    list(APPEND LAF_OS_SOURCES
+      skia/skia_window_ios.mm)
   elseif(APPLE)
     list(APPEND LAF_OS_SOURCES
       skia/skia_window_osx.mm)
@@ -118,7 +130,19 @@ if(WIN32)
   # To include wacom header files
   target_include_directories(laf-os PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../third_party)
 elseif(APPLE)
-  if(COCOA_LIBRARY)
+  if(IOS)
+    find_library(UIKIT_LIBRARY UIKit)
+    find_library(QUARTZCORE_LIBRARY QuartzCore)
+    find_library(COREGRAPHICS_LIBRARY CoreGraphics)
+    find_library(FOUNDATION_LIBRARY Foundation)
+    find_library(UNIFORMTYPEIDENTIFIERS_LIBRARY UniformTypeIdentifiers)
+    list(APPEND LAF_OS_PLATFORM_LIBS
+      ${UIKIT_LIBRARY}
+      ${QUARTZCORE_LIBRARY}
+      ${COREGRAPHICS_LIBRARY}
+      ${FOUNDATION_LIBRARY}
+      ${UNIFORMTYPEIDENTIFIERS_LIBRARY})
+  elseif(COCOA_LIBRARY)
     list(APPEND LAF_OS_PLATFORM_LIBS
       ${COCOA_LIBRARY}
       ${CARBON_LIBRARY})

@@ -16,6 +16,8 @@
   #include <windows.h>
 #elif LAF_MACOS
   #include "os/osx/app.h"
+#elif LAF_IOS
+  #include "os/ios/app.h"
 #elif LAF_LINUX
   #include "os/x11/x11.h"
 #endif
@@ -59,6 +61,11 @@ int wmain(int argc, wchar_t* wargv[], wchar_t* envp[])
 
 int main(int argc, char* argv[])
 {
+#if LAF_IOS
+  // UIApplicationMain() never returns, app_main() is called from
+  // inside the UIKit run loop once the app has finished launching.
+  return os::ios_main(argc, argv, app_main);
+#endif
 #if LAF_MACOS
   os::AppOSX app;
   if (!app.init())

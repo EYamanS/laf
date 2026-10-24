@@ -28,13 +28,13 @@
 #include "include/core/SkSize.h"
 #include "include/core/SkStream.h"
 #include "include/private/SkColorData.h"
+#include "src/image/SkSurface_Raster.h"
 
 #if SK_SUPPORT_GPU
   #include "include/gpu/GrBackendSurface.h"
   #include "include/gpu/GrDirectContext.h"
   #include "include/gpu/ganesh/SkImageGanesh.h"
   #include "include/gpu/ganesh/gl/GrGLBackendSurface.h"
-  #include "src/image/SkSurface_Raster.h"
 #endif
 
 #include <memory>

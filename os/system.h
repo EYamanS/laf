@@ -67,6 +67,9 @@ public:
 #if LAF_MACOS
   [[nodiscard]] static SystemRef makeOSX();
 #endif
+#if LAF_IOS
+  [[nodiscard]] static SystemRef makeIOS();
+#endif
 #if LAF_LINUX
   [[nodiscard]] static SystemRef makeX11();
 #endif
